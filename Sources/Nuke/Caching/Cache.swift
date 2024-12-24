@@ -40,7 +40,7 @@ final class Cache<Key: Hashable, Value>: @unchecked Sendable {
     private var map = [Key: LinkedList<Entry>.Node]()
     private let list = LinkedList<Entry>()
     private let lock: os_unfair_lock_t
-    private let memoryPressure: DispatchSourceMemoryPressure
+//    private let memoryPressure: DispatchSourceMemoryPressure
     private var notificationObserver: AnyObject?
 
     init(costLimit: Int, countLimit: Int) {
@@ -49,11 +49,11 @@ final class Cache<Key: Hashable, Value>: @unchecked Sendable {
         self.lock = .allocate(capacity: 1)
         self.lock.initialize(to: os_unfair_lock())
 
-        self.memoryPressure = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .main)
-        self.memoryPressure.setEventHandler { [weak self] in
-            self?.removeAllCachedValues()
-        }
-        self.memoryPressure.activate()
+//        self.memoryPressure = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .main)
+//        self.memoryPressure.setEventHandler { [weak self] in
+//            self?.removeAllCachedValues()
+//        }
+//        self.memoryPressure.activate()
 
 #if os(iOS) || os(tvOS) || os(visionOS)
         Task {
@@ -66,7 +66,7 @@ final class Cache<Key: Hashable, Value>: @unchecked Sendable {
         lock.deinitialize(count: 1)
         lock.deallocate()
 
-        memoryPressure.cancel()
+//        memoryPressure.cancel()
     }
 
 #if os(iOS) || os(tvOS) || os(visionOS)
